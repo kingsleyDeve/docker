@@ -11,8 +11,6 @@ services:
     
     phpmyadmin:
       image: phpmyadmin/phpmyadmin
-      environment:
-        - PMA_HOST=mariadb
       ports:
         - "8085:80"
       depends_on:
