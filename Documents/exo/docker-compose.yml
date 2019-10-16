@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+    
+    db:
+     image: mariadb
+     volumes:
+       - db_data:/var/lib/mysql
+     environment:
+       - MYSQL_ROOT_PASSWORD=root
+       - MYSQL_DATABASE=wp
+    
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      environment:
+        - PMA_HOST=mariadb
+      ports:
+        - "8085:80"
+      depends_on:
+        - db  
+      links:
+        - db:db
+
+    php:
+      image: php:apache
+      build: .
+      volumes:
+        - php_web:/var/www/html
+      depends_on: 
+        - db
+      ports: 
+        - 5000:80
+    
+    smtp:
+      image: mailhog/mailhog
+      command: ["-smtp-bind-addr", "0.0.0.0:25"]
+      user: root
+      expose:
+        - 25
+        - 8025
+      ports:
+        - 8025:8025  
+
+             
+volumes: 
+  db_data: {}   
+  php_web: {}
+     
